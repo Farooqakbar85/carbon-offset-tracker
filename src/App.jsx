@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import Header from "./components/layout/header";
-import TechnicalView from "./components/Technical/TechnicalView";
+import Header from "./components/layout/Header";
+import TechnicalView from "./components/technical/TechnicalView";
 import ManagementView from "./components/management/ManagementView";
 import GovernmentView from "./components/government/GovernmentView";
 import PublicView from "./components/public/PublicView";
+import { fleetTrees } from "./data/fleetData";
 import {
   getTodayDateString,
   getTreeMetricsForDate,
