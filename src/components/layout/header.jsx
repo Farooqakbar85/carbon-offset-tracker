@@ -7,6 +7,7 @@ export default function Header({
   setView,
   selectedProvince,
   setSelectedProvince,
+  onLogout,
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -103,7 +104,7 @@ export default function Header({
             <p className="text-xs text-white/80">Real-Time Climate Action</p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 rounded-full bg-white/20 px-2 py-1 backdrop-blur-md">
+          <div className="flex flex-wrap items-center justify-end gap-2 rounded-full bg-white/20 px-2 py-1 backdrop-blur-md">
             {tabs.map((tab) => (
               <button
                 key={tab.key}
@@ -133,6 +134,14 @@ export default function Header({
                 ))}
               </select>
             )}
+
+            <button
+              type="button"
+              onClick={onLogout}
+              className="rounded-full px-4 py-2 text-sm font-medium text-white/85 transition hover:bg-white/20 hover:text-white"
+            >
+              Logout
+            </button>
           </div>
         </div>
 
@@ -170,6 +179,14 @@ export default function Header({
                   ))}
                 </select>
               )}
+
+              <button
+                type="button"
+                onClick={onLogout}
+                className="mt-2 w-full rounded-2xl border border-white/20 px-4 py-3 text-sm font-medium text-white/90 transition hover:bg-white/10 hover:text-white"
+              >
+                Logout
+              </button>
             </div>
           </div>
         )}

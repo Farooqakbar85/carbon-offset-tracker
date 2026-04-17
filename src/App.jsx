@@ -20,6 +20,8 @@ import {
 
 const SAMPLE_INTERVAL_MS = 180000;
 const HISTORY_LIMIT = 24;
+const DEMO_PASSWORD = "terraspark@123";
+const STORAGE_KEY = "terraspark_demo_access";
 
 function generateNextSnapshot(prev, selectedTree) {
   const isActive = selectedTree?.online;
@@ -68,13 +70,84 @@ function generateNextSnapshot(prev, selectedTree) {
   };
 }
 
+function PasswordGate({ onUnlock }) {
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    if (password === DEMO_PASSWORD) {
+      sessionStorage.setItem(STORAGE_KEY, "granted");
+      setError("");
+      onUnlock();
+      return;
+    }
+
+    setError("Incorrect password. Please try again.");
+  };
+
+  return (
+    <div className="min-h-screen bg-softBg px-4 py-8 text-slate-900">
+      <div className="mx-auto flex min-h-[80vh] max-w-md items-center justify-center">
+        <div className="w-full rounded-3xl border border-slate-200 bg-white p-6 shadow-xl sm:p-8">
+          <div className="mb-6 text-center">
+            <p className="text-sm font-medium uppercase tracking-[0.2em] text-slate-500">
+              Carbon Offset Tracker
+            </p>
+            <h1 className="mt-2 text-2xl font-bold text-slate-900 sm:text-3xl">
+              Protected Access
+            </h1>
+            <p className="mt-3 text-sm leading-6 text-slate-600 sm:text-base">
+              Enter the password to open the live dashboard
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="demo-password" className="mb-2 block text-sm font-medium text-slate-700">
+                Password
+              </label>
+              <input
+                id="demo-password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter password"
+                className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+              />
+            </div>
+
+            {error ? <p className="text-sm text-red-600">{error}</p> : null}
+
+            <button
+              type="submit"
+              className="w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
+            >
+              Unlock Dashboard
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
+  const [isAuthorized, setIsAuthorized] = useState(false);
   const [view, setView] = useState("technical");
   const [range, setRange] = useState("1H");
   const [selectedProvince, setSelectedProvince] = useState("All Pakistan");
   const [selectedTreeId, setSelectedTreeId] = useState("OXY-001");
   const [selectedDate, setSelectedDate] = useState(getTodayDateString());
   const [showPowerUsage, setShowPowerUsage] = useState(false);
+
+  useEffect(() => {
+    const savedAccess = sessionStorage.getItem(STORAGE_KEY);
+    if (savedAccess === "granted") {
+      setIsAuthorized(true);
+    }
+  }, []);
 
   const selectedTree = useMemo(
     () => fleetTrees.find((tree) => tree.id === selectedTreeId) || fleetTrees[0],
@@ -221,28 +294,28 @@ export default function App() {
   }, [selectedProvince]);
 
   const fleetSummary = useMemo(() => {
-  const totalTrees = fleetTrees.length;
-  const onlineTrees = fleetTrees.filter((tree) => tree.online).length;
+    const totalTrees = fleetTrees.length;
+    const onlineTrees = fleetTrees.filter((tree) => tree.online).length;
 
-  const totalCapturedTodayKg = fleetTrees.reduce((sum, tree) => {
-    return sum + getTreeMetricsForDate(tree, selectedDate).todayCapture;
-  }, 0);
+    const totalCapturedTodayKg = fleetTrees.reduce((sum, tree) => {
+      return sum + getTreeMetricsForDate(tree, selectedDate).todayCapture;
+    }, 0);
 
-  const podsInSelectedProvince =
-    selectedProvince === "All Pakistan"
-      ? fleetTrees.length
-      : fleetTrees.filter((tree) => tree.province === selectedProvince).length;
+    const podsInSelectedProvince =
+      selectedProvince === "All Pakistan"
+        ? fleetTrees.length
+        : fleetTrees.filter((tree) => tree.province === selectedProvince).length;
 
-  return {
-    totalTrees,
-    onlineTrees,
-    totalCapturedTodayKg: Number(totalCapturedTodayKg.toFixed(1)),
-    totalMonthKg: Number((totalCapturedTodayKg * 24).toFixed(1)),
-    totalLifetimeKg: 1170,
-    avgEfficiency: 78.6,
-    podsInSelectedProvince,
-  };
-}, [selectedDate, selectedProvince]);
+    return {
+      totalTrees,
+      onlineTrees,
+      totalCapturedTodayKg: Number(totalCapturedTodayKg.toFixed(1)),
+      totalMonthKg: Number((totalCapturedTodayKg * 24).toFixed(1)),
+      totalLifetimeKg: 1170,
+      avgEfficiency: 78.6,
+      podsInSelectedProvince,
+    };
+  }, [selectedDate, selectedProvince]);
 
   const derived = useMemo(() => computeDerived(snapshot), [snapshot]);
 
@@ -283,9 +356,18 @@ export default function App() {
     isTodaySelected,
   };
 
+  if (!isAuthorized) {
+    return <PasswordGate onUnlock={() => setIsAuthorized(true)} />;
+  }
+
+  const handleLogout = () => {
+    sessionStorage.removeItem(STORAGE_KEY);
+    setIsAuthorized(false);
+  };
+
   return (
     <div className="min-h-screen bg-softBg text-slate-900">
-      <Header {...sharedProps} />
+      <Header {...sharedProps} onLogout={handleLogout} />
 
       <main className="mx-auto max-w-7xl p-4 sm:p-6 md:p-8">
         {view === "technical" && <TechnicalView {...sharedProps} />}
