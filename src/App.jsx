@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import Header from "./components/layout/Header";
+import Header from "./components/layout/header.jsx";
 import TechnicalView from "./components/Technical/TechnicalView";
 import ManagementView from "./components/management/ManagementView";
 import GovernmentView from "./components/government/GovernmentView";
