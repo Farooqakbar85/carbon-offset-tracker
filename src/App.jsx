@@ -18,7 +18,7 @@ import {
   isToday,
 } from "./utils/helpers";
 
-const SAMPLE_INTERVAL_MS = 180000;
+const SAMPLE_INTERVAL_MS = 2000;
 const HISTORY_LIMIT = 24;
 const DEMO_PASSWORD = "terraspark@123";
 const STORAGE_KEY = "terraspark_demo_access";
