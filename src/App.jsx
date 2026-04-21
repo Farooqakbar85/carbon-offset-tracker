@@ -36,12 +36,8 @@ function generateNextSnapshot(prev, selectedTree) {
   const inlet = clamp(prev.sensors.inlet.co2_kg + (Math.random() * 0.16 - 0.08), 7.8, 8.95);
   const outlet = clamp(prev.sensors.outlet.co2_kg + (Math.random() * 0.04 - 0.02), 0.03, 0.22);
   const airflow = clamp(prev.sensors.airflow_m3h + (Math.random() * 8 - 4), 410, 446);
-  const power = clamp(
-  prev.sensors.power_w + (Math.random() * 0.05 - 0.025),
-  0.2,
-  0.5
-);
-
+  const possibleValues = [0.2, 0.3, 0.4];
+  const power = possibleValues[Math.floor(Math.random() * possibleValues.length)];
   const tempIn = clamp(prev.sensors.inlet.temperature_c + (Math.random() * 0.6 - 0.3), 29.5, 33.8);
   const tempOut = clamp(tempIn - 0.7, 28.5, 33.0);
   const rhIn = clamp(prev.sensors.inlet.humidity_rh + (Math.random() * 1.2 - 0.6), 48, 60);
@@ -70,7 +66,7 @@ function generateNextSnapshot(prev, selectedTree) {
       fan_rpm: 1460,
       fan_duty_pct: 67,
       pressure_drop_pa: 41.2,
-      power_w: Number(power.toFixed(2)),
+      power_w: power,
     },
   };
 }
