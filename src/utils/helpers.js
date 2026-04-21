@@ -115,9 +115,7 @@ export function generateDateBasedHistory(tree, dateString) {
     const safeOutlet = Number(clamp(outlet, 0.03, 0.22).toFixed(2));
     const delta = Number((safeInlet - safeOutlet).toFixed(2));
     const capture = Number((delta * 0.998).toFixed(2));
-    const power = Number(
-      clamp(169 + Math.sin(period * Math.PI * 2) * 4 + (seed % 3), 164, 178).toFixed(0)
-    );
+    const power = Number((0.35 + Math.sin(index / 3) * 0.1).toFixed(2));
     const airflow = Number(
       clamp(427 + Math.cos(period * Math.PI * 2) * 8 + (seed % 4), 410, 446).toFixed(0)
     );
