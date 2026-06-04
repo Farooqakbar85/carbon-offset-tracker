@@ -43,7 +43,7 @@ export function getTreeMetricsForDate(tree, dateString) {
   const offset = ((seed + tree.id.charCodeAt(tree.id.length - 1)) % 5) - 2;
 
   const todayCapture = clamp(tree.capturedTodayKg + offset * 0.35, 0, 25);
-  const efficiency = clamp(tree.efficiency + offset * 0.4, 72, 79);
+  const efficiency = clamp(93 + offset * 2.5, 88, 98);
 
   return {
     todayCapture: Number(todayCapture.toFixed(1)),
