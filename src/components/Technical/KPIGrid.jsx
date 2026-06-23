@@ -56,22 +56,22 @@ export default function KPIGrid({
   ];
 
   return (
-    <section className="grid min-h-screen grid-cols-1 gap-6 py-8 md:grid-cols-2 xl:grid-cols-4">
+    <section className="grid min-h-screen grid-cols-1 gap-8 py-10 md:grid-cols-2 xl:grid-cols-4">
       {cards.map(([title, value, unit]) => (
         <div
           key={title}
-          className="flex min-h-[220px] items-center rounded-2xl border border-borderSoft bg-panelBg shadow-sm"
+          className="flex min-h-[260px] items-center rounded-2xl border border-borderSoft bg-panelBg shadow-sm"
         >
-          <div className="p-8">
+          <div className="p-9">
             <p className="text-2xl text-textSoft">{title}</p>
 
-            <div className="mt-6 flex items-end gap-3">
-              <span className="text-6xl font-semibold text-greenInk">
+            <div className="mt-7 flex items-end gap-3">
+              <span className="text-7xl font-semibold text-greenInk">
                 {value}
               </span>
 
               {unit && (
-                <span className="pb-2 text-2xl text-textSoft">{unit}</span>
+                <span className="pb-3 text-2xl text-textSoft">{unit}</span>
               )}
             </div>
           </div>
