@@ -28,47 +28,51 @@ export default function KPIGrid({
         <p className="text-xl font-semibold text-greenInk">
           This site is currently not operational.
         </p>
-        <p className="text-textSoft mt-2">
+        <p className="mt-2 text-textSoft">
           It will be operational in the near future.
         </p>
       </div>
     );
   }
 
-const operationalEfficiency = isToday(selectedDate)
-  ? Math.round(88 + Math.random() * 10)
-  : getSelectedTreeOperationalEfficiency(selectedTree, selectedDate);
+  const operationalEfficiency = getSelectedTreeOperationalEfficiency(
+    selectedTree,
+    selectedDate
+  );
 
   const dataAge = isToday(selectedDate)
     ? `${snapshot.status.last_update_age_sec} s`
     : "Historical Data";
 
   const cards = [
-    ["CO₂ Inlet", snapshot.sensors.inlet.co2_kg, "kg"],
-    ["CO₂ Outlet", snapshot.sensors.outlet.co2_kg, "kg"],
-    ["CO₂ Reduction", derived.reductionKg, "kg"],
+    ["CO₂ Inlet", snapshot.sensors.inlet.co2_kg, "g"],
+    ["CO₂ Outlet", snapshot.sensors.outlet.co2_kg, "g"],
+    ["CO₂ Reduction", derived.reductionKg, "g"],
     ["Operational Efficiency", operationalEfficiency, "%"],
     ["Airflow", snapshot.sensors.airflow_m3h, "m³/h"],
-    ["CO₂ Capture", derived.captureRateKgh, "kg/h"],
+    ["CO₂ Capture", derived.captureRateKgh, "g/h"],
     ["Power", snapshot.sensors.power_w, "W"],
     ["Data Age", dataAge, ""],
   ];
 
   return (
-    <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-8">
+    <section className="grid min-h-screen grid-cols-1 gap-6 py-8 md:grid-cols-2 xl:grid-cols-4">
       {cards.map(([title, value, unit]) => (
         <div
           key={title}
-          className="rounded-2xl border border-borderSoft bg-panelBg shadow-sm"
+          className="flex min-h-[220px] items-center rounded-2xl border border-borderSoft bg-panelBg shadow-sm"
         >
-          <div className="p-5">
-            <p className="text-sm text-textSoft">{title}</p>
+          <div className="p-8">
+            <p className="text-2xl text-textSoft">{title}</p>
 
-            <div className="mt-2 flex items-end gap-2">
-              <span className="text-3xl font-semibold text-greenInk">
+            <div className="mt-6 flex items-end gap-3">
+              <span className="text-6xl font-semibold text-greenInk">
                 {value}
               </span>
-              <span className="text-sm text-textSoft">{unit}</span>
+
+              {unit && (
+                <span className="pb-2 text-2xl text-textSoft">{unit}</span>
+              )}
             </div>
           </div>
         </div>
