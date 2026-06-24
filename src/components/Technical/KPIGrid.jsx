@@ -17,9 +17,19 @@ export default function KPIGrid({
   derived,
   selectedDate,
 }) {
-  const [operationalEfficiency, setOperationalEfficiency] = useState(88);
+  const today = isToday(selectedDate);
+  const future = isFutureDate(selectedDate);
+
+  const [operationalEfficiency, setOperationalEfficiency] = useState(() =>
+    getRandomEfficiency(88)
+  );
 
   useEffect(() => {
+    if (!today) {
+      setOperationalEfficiency(getRandomEfficiency(88));
+      return;
+    }
+
     const interval = setInterval(() => {
       setOperationalEfficiency((previousValue) =>
         getRandomEfficiency(previousValue)
@@ -27,9 +37,7 @@ export default function KPIGrid({
     }, 2000);
 
     return () => clearInterval(interval);
-  }, []);
-
-  const future = isFutureDate(selectedDate);
+  }, [today, selectedDate]);
 
   if (future) {
     return (
@@ -54,7 +62,7 @@ export default function KPIGrid({
     );
   }
 
-  const dataAge = isToday(selectedDate)
+  const dataAge = today
     ? `${snapshot.status.last_update_age_sec} s`
     : "Historical Data";
 
@@ -71,26 +79,36 @@ export default function KPIGrid({
 
   return (
     <section className="grid min-h-screen grid-cols-1 gap-8 py-10 md:grid-cols-2 xl:grid-cols-4">
-      {cards.map(([title, value, unit]) => (
-        <div
-          key={title}
-          className="flex min-h-[260px] items-center rounded-2xl border border-borderSoft bg-panelBg shadow-sm"
-        >
-          <div className="p-9">
-            <p className="text-2xl text-textSoft">{title}</p>
+      {cards.map(([title, value, unit]) => {
+        const isHistoricalData = title === "Data Age" && value === "Historical Data";
 
-            <div className="mt-7 flex items-end gap-3">
-              <span className="text-7xl font-semibold text-greenInk">
-                {value}
-              </span>
+        return (
+          <div
+            key={title}
+            className="flex min-h-[260px] items-center rounded-2xl border border-borderSoft bg-panelBg shadow-sm"
+          >
+            <div className="w-full p-9">
+              <p className="text-2xl text-textSoft">{title}</p>
 
-              {unit && (
-                <span className="pb-3 text-2xl text-textSoft">{unit}</span>
-              )}
+              <div className="mt-7 flex items-end gap-3">
+                <span
+                  className={`font-semibold text-greenInk ${
+                    isHistoricalData
+                      ? "text-4xl leading-tight"
+                      : "text-7xl"
+                  }`}
+                >
+                  {value}
+                </span>
+
+                {unit && (
+                  <span className="pb-3 text-2xl text-textSoft">{unit}</span>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </section>
   );
 }
