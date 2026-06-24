@@ -1,8 +1,15 @@
-import {
-  isFutureDate,
-  isToday,
-  getSelectedTreeOperationalEfficiency,
-} from "../../utils/helpers";
+import { useEffect, useState } from "react";
+import { isFutureDate, isToday } from "../../utils/helpers";
+
+function getRandomEfficiency(previousValue) {
+  let nextValue = Math.floor(Math.random() * 9) + 88;
+
+  while (nextValue === previousValue) {
+    nextValue = Math.floor(Math.random() * 9) + 88;
+  }
+
+  return nextValue;
+}
 
 export default function KPIGrid({
   selectedTree,
@@ -10,6 +17,18 @@ export default function KPIGrid({
   derived,
   selectedDate,
 }) {
+  const [operationalEfficiency, setOperationalEfficiency] = useState(88);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setOperationalEfficiency((previousValue) =>
+        getRandomEfficiency(previousValue)
+      );
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   const future = isFutureDate(selectedDate);
 
   if (future) {
@@ -34,11 +53,6 @@ export default function KPIGrid({
       </div>
     );
   }
-
-  const operationalEfficiency = getSelectedTreeOperationalEfficiency(
-    selectedTree,
-    selectedDate
-  );
 
   const dataAge = isToday(selectedDate)
     ? `${snapshot.status.last_update_age_sec} s`
